@@ -1,0 +1,26 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="pagination(page)" th:if="${page.totalPages > 1}" class="pagination">
+  <a th:if="${!page.isFirst()}"
+     th:href="@{''(page=${page.number - 1}, size=${page.size}, q=${param.q}, modulo=${param.modulo})}"
+     class="page-link">&laquo; Anterior</a>
+
+  <th:block th:with="
+      start = ${page.number - 2 > 0 ? page.number - 2 : 0},
+      end = ${page.number + 2 < page.totalPages - 1 ? page.number + 2 : page.totalPages - 1}">
+    <a th:if="${start > 0}" th:href="@{''(page=0, size=${page.size}, q=${param.q}, modulo=${param.modulo})}" class="page-link">1</a>
+    <span th:if="${start > 1}" class="page-link dots">...</span>
+    <span th:each="i : ${#numbers.sequence(start, end)}">
+      <a th:if="${i != page.number}"
+         th:href="@{''(page=${i}, size=${page.size}, q=${param.q}, modulo=${param.modulo})}"
+         class="page-link" th:text="${i + 1}"></a>
+      <span th:if="${i == page.number}" class="page-link active" th:text="${i + 1}"></span>
+    </span>
+    <span th:if="${end < page.totalPages - 2}" class="page-link dots">...</span>
+    <a th:if="${end < page.totalPages - 1}"
+       th:href="@{''(page=${page.totalPages - 1}, size=${page.size}, q=${param.q}, modulo=${param.modulo})}"
+       class="page-link" th:text="${page.totalPages}"></a>
+  </th:block>
+
+  <a th:if="${!page.isLast()}"
+     th:href="@{''(page=${page.number + 1}, size=${page.size}, q=${param.q}, modulo=${param.modulo})}"
+     class="page-link">Siguiente &raquo;</a>
+</div>

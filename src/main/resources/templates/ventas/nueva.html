@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nueva Venta · FarmaPlus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!--  En producción reemplazar por: th:href="@{/css/styles.css}"  -->
+ 
+   <link rel="stylesheet" th:href="@{/css/styles.css}" />
+     <link rel="stylesheet" th:href="@{/css/nueva_venta.css}" />
+</head>
+<body class="admin-layout">
+
+  <!-- Sidebar externo (Thymeleaf fragment) -->
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+  <main class="admin-main nv-page">
+
+    <!-- ── Header ─────────────────────────────────── -->
+    <header class="nv-header">
+      <div class="nv-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+          <path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+      <div class="nv-header-text">
+        <h1>Nueva Venta</h1>
+        <p>Registrar una nueva transacción en el sistema</p>
+      </div>
+    </header>
+
+    <!-- ── Steps ──────────────────────────────────── -->
+    <div class="nv-steps">
+      <div class="nv-step active" id="step-1">
+        <div class="nv-step-num">1</div>
+        <span class="nv-step-label">Cliente &amp; Pago</span>
+      </div>
+      <div class="nv-step-line"></div>
+      <div class="nv-step" id="step-2">
+        <div class="nv-step-num">2</div>
+        <span class="nv-step-label">Productos</span>
+      </div>
+      <div class="nv-step-line"></div>
+      <div class="nv-step" id="step-3">
+        <div class="nv-step-num">3</div>
+        <span class="nv-step-label">Confirmar</span>
+      </div>
+    </div>
+
+    <!-- ── Alerta de error (Thymeleaf) ────────────── -->
+    <div th:if="${error}" class="nv-alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" x2="12" y1="8" y2="12"/>
+        <line x1="12" x2="12.01" y1="16" y2="16"/>
+      </svg>
+      <span th:text="${error}"></span>
+    </div>
+
+    <!-- ── Formulario ─────────────────────────────── -->
+    <form th:action="@{/ventas/guardar}" method="post"
+          onsubmit="return validarFormulario()" class="nv-grid" autocomplete="off">
+
+      <div th:replace="~{fragments/csrf :: csrfToken}"></div>
+
+      <!-- ═══════════════════════════════════════════
+           COLUMNA IZQUIERDA — Datos de la venta
+      ════════════════════════════════════════════ -->
+      <div class="nv-card" style="animation-delay:.02s">
+
+        <div class="nv-card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+          </svg>
+          <h2>Datos de la venta</h2>
+        </div>
+
+        <div class="nv-card-body">
+
+          <!-- Cliente -->
+          <div class="nv-field">
+            <label class="nv-label" for="nv-cliente-search">Cliente</label>
+            <div class="nv-input-wrap" style="margin-bottom:8px;">
+              <svg class="nv-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input type="text" id="nv-cliente-search" class="nv-input has-icon nv-search-input"
+                     placeholder="Buscar por nombre o documento…"
+                     oninput="filtrarClientes()" autocomplete="off" />
+            </div>
+            <div class="nv-select-wrap">
+              <select name="clienteId" id="nv-cliente-select" class="nv-select" required
+                      onchange="actualizarSteps()">
+                <option value="">— Seleccione un cliente —</option>
+                <!-- Thymeleaf: -->
+                <option th:each="c : ${clientes}"
+                        th:value="${c.id}"
+                        th:text="${c.documento} + ' · ' + ${c.nombre}"
+                        th:attr="data-search=${c.documento + ' ' + c.nombre.toLowerCase()}">
+                </option>
+                <!-- Demo estático (quitar en producción): -->
+                <option value="1" data-search="123456789 juan pérez">123456789 · Juan Pérez</option>
+                <option value="2" data-search="987654321 maría gómez">987654321 · María Gómez</option>
+                <option value="3" data-search="555111222 carlos rojas">555111222 · Carlos Rojas</option>
+              </select>
+              <svg class="nv-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>
+            <p class="nv-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/>
+                <line x1="12" x2="12.01" y1="16" y2="16"/>
+              </svg>
+              Si el cliente no existe, regístrelo primero en Clientes
+            </p>
+          </div>
+
+          <div class="nv-divider"></div>
+
+          <!-- Método de pago -->
+          <div class="nv-field">
+            <label class="nv-label">Método de pago</label>
+            <div class="nv-payment-group">
+
+              <input type="radio" name="metodoPago" value="EFECTIVO" id="pay-cash"
+                     class="nv-payment-option" checked onchange="togglePago()" />
+              <label for="pay-cash" class="nv-payment-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="12" x="2" y="6" rx="2"/>
+                  <circle cx="12" cy="12" r="2"/>
+                  <path d="M6 12h.01M18 12h.01"/>
+                </svg>
+                Efectivo
+              </label>
+
+              <input type="radio" name="metodoPago" value="TARJETA" id="pay-card"
+                     class="nv-payment-option" onchange="togglePago()" />
+              <label for="pay-card" class="nv-payment-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="14" x="2" y="5" rx="2"/>
+                  <line x1="2" x2="22" y1="10" y2="10"/>
+                </svg>
+                Tarjeta
+              </label>
+
+              <input type="radio" name="metodoPago" value="TRANSFERENCIA" id="pay-transfer"
+                     class="nv-payment-option" onchange="togglePago()" />
+              <label for="pay-transfer" class="nv-payment-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                </svg>
+                Transferencia
+              </label>
+
+            </div>
+          </div>
+
+          <!-- Efectivo: monto y cambio -->
+          <div id="nv-efectivo-fields" class="nv-field">
+            <label class="nv-label" for="nv-monto-pagado">Monto recibido</label>
+            <div class="nv-input-wrap">
+              <svg class="nv-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <input type="number" name="montoPagado" id="nv-monto-pagado"
+                     class="nv-input has-icon" min="0" step="0.01" placeholder="0.00"
+                     oninput="actualizarCambio()" />
+            </div>
+            <!-- Cambio dinámico -->
+            <div id="nv-cambio-box" class="nv-cambio-box"></div>
+          </div>
+
+        </div><!-- /card-body -->
+      </div><!-- /card izquierda -->
+
+
+      <!-- ═══════════════════════════════════════════
+           COLUMNA DERECHA — Productos
+      ════════════════════════════════════════════ -->
+      <div class="nv-card" style="animation-delay:.08s">
+
+        <div class="nv-card-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.5 9.4 7.55 4.24a1 1 0 0 0-1.1 0L5 5.07"/>
+            <path d="M18.5 12.5v5.26A2 2 0 0 1 16 19.7l-5.5 2.7a2 2 0 0 1-1.8 0L3.3 17.2A2 2 0 0 1 2 15.44V9.22"/>
+          </svg>
+          <h2>Productos</h2>
+          <span class="nv-badge" id="nv-items-badge">0 ítems</span>
+        </div>
+
+        <div class="nv-card-body">
+
+          <!-- Buscador de producto -->
+          <div class="nv-field">
+            <label class="nv-label" for="nv-producto-search">Buscar producto</label>
+            <div class="nv-input-wrap">
+              <svg class="nv-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input type="text" id="nv-producto-search" class="nv-input has-icon nv-search-input"
+                     placeholder="Nombre del producto…" oninput="filtrarProductos()" />
+            </div>
+          </div>
+
+          <!-- Tabla de productos -->
+          <table class="nv-products-table">
+            <thead>
+              <tr>
+                <th style="width:45%">Producto</th>
+                <th style="width:15%;text-align:center">Cant.</th>
+                <th style="width:18%;text-align:right">P. Unit.</th>
+                <th style="width:16%;text-align:right">Subtotal</th>
+                <th style="width:6%"></th>
+              </tr>
+            </thead>
+            <tbody id="nv-products-tbody">
+
+              <!-- Fila inicial -->
+              <tr class="nv-product-row" data-row="1">
+                <td>
+                  <div class="nv-select-wrap">
+                    <select name="productoId" class="nv-select" required
+                            onchange="recalcularTotal(); actualizarSteps();">
+                      <option value="">— Seleccione —</option>
+                      <!-- Thymeleaf: -->
+                      <option th:each="p : ${productos}"
+                              th:value="${p.id}"
+                              th:attr="data-precio=${p.precioVenta},data-stock=${p.stock},data-search=${p.nombre.toLowerCase()}"
+                              th:text="${p.nombre} + ' (' + ${p.stock} + ' disp.)'">
+                      </option>
+                      <!-- Demo estático (quitar en producción): -->
+                      <option value="101" data-precio="12500" data-stock="40" data-search="ibuprofeno 400mg">Ibuprofeno 400mg (40 disp.)</option>
+                      <option value="102" data-precio="8900"  data-stock="25" data-search="amoxicilina 500mg">Amoxicilina 500mg (25 disp.)</option>
+                      <option value="103" data-precio="34000" data-stock="12" data-search="vitamina c 1000mg">Vitamina C 1000mg (12 disp.)</option>
+                      <option value="104" data-precio="5600"  data-stock="60" data-search="paracetamol 500mg">Paracetamol 500mg (60 disp.)</option>
+                      <option value="105" data-precio="78000" data-stock="8"  data-search="omeprazol 20mg">Omeprazol 20mg (8 disp.)</option>
+                    </select>
+                    <svg class="nv-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </div>
+                </td>
+                <td>
+                  <input type="number" name="cantidad" class="nv-input nv-qty"
+                         min="1" value="1" required oninput="recalcularTotal()" />
+                </td>
+                <td class="nv-unit-price" style="text-align:right">—</td>
+                <td class="nv-row-subtotal" style="text-align:right">—</td>
+                <td>
+                  <button type="button" class="nv-btn-remove" title="Quitar"
+                          onclick="quitarProducto(this)" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+
+          <!-- Botón agregar producto -->
+          <button type="button" class="nv-btn-add" onclick="agregarProducto()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/><path d="M12 5v14"/>
+            </svg>
+            Agregar otro producto
+          </button>
+
+          <!-- Panel de total -->
+          <div class="nv-total-panel">
+            <p class="nv-total-label">Total a cobrar</p>
+            <p class="nv-total-amount" id="nv-total-amount">$0.00</p>
+            <p class="nv-total-items" id="nv-total-items">Sin productos</p>
+
+            <div class="nv-total-breakdown">
+              <div class="nv-breakdown-row">
+                <span>Subtotal (sin IVA)</span>
+                <span id="nv-breakdown-sub">$0.00</span>
+              </div>
+              <div class="nv-breakdown-row">
+                <span>IVA (19%)</span>
+                <span id="nv-breakdown-iva">$0.00</span>
+              </div>
+              <div class="nv-breakdown-row highlight">
+                <span>Total</span>
+                <span id="nv-breakdown-total">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="nv-btn-submit" id="nv-btn-submit">
+            <div class="nv-spinner"></div>
+            <svg class="nv-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span class="nv-btn-text">Registrar venta</span>
+          </button>
+
+        </div><!-- /card-body -->
+      </div><!-- /card derecha -->
+
+    </form><!-- /form -->
+
+    <!-- Template para nuevas filas (clonado por JS) -->
+    <template id="nv-product-row-template">
+      <tr class="nv-product-row">
+        <td>
+          <div class="nv-select-wrap">
+            <select name="productoId" class="nv-select" required>
+              <option value="">— Seleccione —</option>
+            </select>
+            <svg class="nv-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+        </td>
+        <td>
+          <input type="number" name="cantidad" class="nv-input nv-qty"
+                 min="1" value="1" required oninput="recalcularTotal()" />
+        </td>
+        <td class="nv-unit-price" style="text-align:right">—</td>
+        <td class="nv-row-subtotal" style="text-align:right">—</td>
+        <td>
+          <button type="button" class="nv-btn-remove" title="Quitar" onclick="quitarProducto(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </template>
+
+  </main>
+
+  <!--  En producción: th:src="@{/js/nueva_venta.js}"  -->
+  <script th:src="@{/js/nueva_venta.js}"></script>
+</body>
+</html>

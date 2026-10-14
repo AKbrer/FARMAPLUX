@@ -1,0 +1,26 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+      html, body { height:100%; margin:0; }
+      .admin-layout { height:100vh; display:flex; }
+      .admin-main { flex:1; margin-left:280px; display:flex; flex-direction:column; }
+      .admin-main iframe { flex:1; width:100%; border:none; }
+    </style>
+  </head>
+  <body class="admin-layout">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <main class="admin-main">
+      <iframe
+        title="FarmaPlux - PowerBI Dashboard"
+        src="https://app.powerbi.com/view?r=eyJrIjoiZDYzOWMxZTktMTIyYy00OWU5LWE1NmItYmRkMzBhODc0ZWJmIiwidCI6IjlkMTJiZjNmLWU0ZjYtNDdhYi05MTJmLTFhMmYwZmM0OGFhNCIsImMiOjR9"
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="admin-layout">
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <main class="admin-main">
+      <div th:if="${success}" class="alert alert-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${success}"></span>
+      </div>
+      <div th:if="${error}" class="alert alert-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <span th:text="${error}"></span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Productos</h1>
+          <p class="page-desc">Gestión de productos del inventario farmacéutico</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-primary" th:href="@{/productos/nuevo}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Nuevo Producto
+          </a>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-header">
+          <form th:action="@{/productos}" method="get" class="filters-bar">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" name="q" th:value="${q}" placeholder="Buscar por nombre..." />
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+            <a th:href="@{/productos}" class="btn btn-outline btn-sm">Limpiar</a>
+          </form>
+        </div>
+        <div class="card-content">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Imagen</th>
+                  <th>Nombre</th>
+                  <th>Código</th>
+                  <th>Categoría</th>
+                  <th>Proveedor</th>
+                  <th>Stock</th>
+                  <th>Stock Mín</th>
+                  <th>Precio Compra</th>
+                  <th>Precio Venta</th>
+                  <th>Fecha Venc.</th>
+                  <th>Lote</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="p : ${page.content}">
+                  <td>
+                    <img th:if="${p.imagenUrl}" th:src="${p.imagenUrl}" alt="img" style="width:44px;height:44px;object-fit:cover;border-radius:var(--radius-sm);" />
+                    <span th:unless="${p.imagenUrl}" style="color:var(--text-muted);font-size:12px;">—</span>
+                  </td>
+                  <td style="font-weight:600;" th:text="${p.nombre}"></td>
+                  <td th:text="${p.codigoBarras}"></td>
+                  <td><span class="badge badge-outline" th:text="${p.categoria?.nombre}"></span></td>
+                  <td th:text="${p.proveedor?.nombre}"></td>
+                  <td>
+                    <span th:classappend="${p.stock <= p.stockMinimo} ? 'badge badge-danger' : 'badge badge-success'" th:text="${p.stock}"></span>
+                  </td>
+                  <td th:text="${p.stockMinimo}"></td>
+                  <td>$<span th:text="${#numbers.formatDecimal(p.precioCompra, 1, 2)}"></span></td>
+                  <td style="font-weight:600;color:var(--primary);">$<span th:text="${#numbers.formatDecimal(p.precioVenta, 1, 2)}"></span></td>
+                  <td th:text="${p.fechaVencimiento}"></td>
+                  <td th:text="${p.lote}"></td>
+                  <td>
+                    <div class="actions-cell">
+                      <a class="btn btn-icon btn-icon-sm btn-ghost" th:href="@{/productos/editar/{id}(id=${p.id})}" title="Editar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </a>
+                      <a class="btn btn-icon btn-icon-sm btn-ghost" th:href="@{/productos/eliminar/{id}(id=${p.id})}" style="color:var(--danger);" title="Eliminar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${page.content.isEmpty()}">
+                  <td colspan="12">
+                    <div class="empty-state">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24a1 1 0 0 0-1.1 0L5 5.07"/><path d="M18.5 12.5v5.26A2 2 0 0 1 16 19.7l-5.5 2.7a2 2 0 0 1-1.8 0L3.3 17.2A2 2 0 0 1 2 15.44V9.22"/><path d="M8.5 4.5 2.7 7.84A2 2 0 0 0 2 9.5"/></svg>
+                      <h3>No hay productos</h3>
+                      <p>Comienza agregando un nuevo producto al inventario</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:replace="~{fragments/pagination :: pagination(${page})}"></div>
+        </div>
+      </div>
+    </main>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

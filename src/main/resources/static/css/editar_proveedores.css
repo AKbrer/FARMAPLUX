@@ -1,0 +1,163 @@
+/* =========================================================
+   editar_proveedores.css
+   Estilos específicos para Editar Proveedor.
+   Depende de styles.css (variables ya definidas ahí).
+   ========================================================= */
+
+/* ── Wrapper principal de la página ── */
+.admin-main .form-page-card {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Título dentro del card ── */
+.form-page-card .page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-page-card .page-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(180deg, var(--primary), #10b981);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Subtítulo descriptivo */
+.form-page-card .page-subtitle {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Labels ── */
+.form-page-card .form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.form-page-card .required {
+  color: var(--danger);
+}
+
+/* ── Inputs ── */
+.form-page-card .form-input,
+.form-page-card .form-textarea {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 16px;
+  font-size: 0.875rem;
+  color: var(--text);
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.form-page-card .form-input:focus,
+.form-page-card .form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+  background: var(--surface);
+}
+
+.form-page-card .form-input:hover:not(:focus),
+.form-page-card .form-textarea:hover:not(:focus) {
+  border-color: #cbd5e1;
+}
+
+.form-page-card .form-input::placeholder,
+.form-page-card .form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-page-card .form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ── Row dos columnas ── */
+.form-page-card .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Grupos ── */
+.form-page-card .form-group {
+  margin-bottom: 20px;
+}
+
+/* ── Acciones ── */
+.form-page-card .form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* Botón primario con gradiente (hereda .btn-primary de styles.css,
+   aquí solo ajustamos el tamaño para que no sea full-width) */
+.form-page-card .form-actions .btn {
+  flex: 0 1 auto;
+  padding: 10px 24px;
+  min-width: 160px;
+}
+
+/* Botón cancelar sutil */
+.form-page-card .form-actions .btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+}
+
+.form-page-card .form-actions .btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .admin-main .form-page-card {
+    padding: 24px 18px;
+    border-radius: var(--radius);
+  }
+
+  .form-page-card .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-page-card .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-page-card .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

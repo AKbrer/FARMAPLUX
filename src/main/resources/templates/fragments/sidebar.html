@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <aside class="sidebar" th:fragment="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+      </div>
+      <span class="sidebar-logo-text">Farma<span>Plus</span></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul class="sidebar-nav-list">
+        <li th:if="${#strings.contains(currentUri, '/admin') || currentUri == '/'}">
+          <span class="sidebar-section-label">Menú Principal</span>
+        </li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/admin')} ? 'active'" th:href="@{/admin}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Dashboard
+        </a></li>
+      </ul>
+
+      <ul class="sidebar-nav-list">
+        <li><span class="sidebar-section-label">Inventario</span></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/productos')} ? 'active'" th:href="@{/productos}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24a1 1 0 0 0-1.1 0L5 5.07"/><path d="M18.5 12.5v5.26A2 2 0 0 1 16 19.7l-5.5 2.7a2 2 0 0 1-1.8 0L3.3 17.2A2 2 0 0 1 2 15.44V9.22"/><path d="M8.5 4.5 2.7 7.84A2 2 0 0 0 2 9.5"/><path d="m10 13 2 2 4-4"/></svg>
+          Productos
+        </a></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/categorias')} ? 'active'" th:href="@{/categorias}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+          Categorías
+        </a></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/proveedores')} ? 'active'" th:href="@{/proveedores}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+          Proveedores
+        </a></li>
+      </ul>
+
+      <ul class="sidebar-nav-list">
+        <li><span class="sidebar-section-label">Clientes</span></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/clientes')} ? 'active'" th:href="@{/clientes}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Clientes
+        </a></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/usuarios')} ? 'active'" th:href="@{/usuarios}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Usuarios
+        </a></li>
+      </ul>
+
+      <ul class="sidebar-nav-list">
+        <li><span class="sidebar-section-label">Ventas</span></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/ventas')} ? 'active'" th:href="@{/ventas}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Ventas
+        </a></li>
+      </ul>
+
+      <ul class="sidebar-nav-list">
+        <li><span class="sidebar-section-label">Auditoría</span></li>
+        <li><a class="sidebar-nav-link" th:classappend="${#strings.contains(currentUri, '/movimientos')} ? 'active'" th:href="@{/movimientos}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+          Movimientos
+        </a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a th:href="@{/logout}" class="logout-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </a>
+      <span>FarmaPlus &copy; 2026</span>
+    </div>
+  </aside>
+</html>

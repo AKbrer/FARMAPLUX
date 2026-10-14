@@ -1,0 +1,64 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nueva categoría - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="admin-layout">
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <main class="admin-main">
+      <div class="form-page-wrap">
+        <div class="form-page-header">
+          <div class="form-page-header-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+          </div>
+          <div class="form-page-header-text">
+            <h1>Nueva Categoría</h1>
+            <p>Agrega una nueva clasificación para los productos</p>
+          </div>
+        </div>
+
+        <div class="form-page-card">
+          <div class="form-page-card-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+            <span>Detalles de la categoría</span>
+          </div>
+          <div class="form-page-card-body">
+            <form th:action="@{/categorias/guardar}" th:object="${categoria}" method="post">
+              <div th:replace="~{fragments/csrf :: csrfToken}"></div>
+              <div class="form-group">
+                <label class="form-label">Nombre <span class="required">*</span></label>
+                <div class="form-input-wrap">
+                  <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                  <input class="form-input" type="text" th:field="*{nombre}" required placeholder="Ej: Antibióticos, Analgésicos, Vitaminas" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <div class="form-input-wrap">
+                  <textarea class="form-textarea" th:field="*{descripcion}" placeholder="Describe brevemente esta categoría (opcional)"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <a class="btn btn-outline" th:href="@{/categorias}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  Cancelar
+                </a>
+                <button class="btn btn-primary" type="submit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  Guardar categoría
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

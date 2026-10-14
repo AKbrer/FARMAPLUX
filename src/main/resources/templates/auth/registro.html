@@ -1,0 +1,40 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo-wrap">
+        <div class="auth-logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+        </div>
+        <div class="auth-brand">Farma<span>Plus</span></div>
+      </div>
+      <h2>Crear cuenta</h2>
+      <p class="auth-subtitle">Regístrate para acceder al catálogo de productos</p>
+      <form th:action="@{/registro}" th:object="${usuario}" method="post">
+        <div th:replace="~{fragments/csrf :: csrfToken}"></div>
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" th:field="*{nombre}" placeholder="Ingrese su nombre" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input class="form-input" type="email" th:field="*{correo}" placeholder="correo@ejemplo.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-input" type="password" th:field="*{password}" placeholder="Ingrese una contraseña segura" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Crear cuenta</button>
+        <div class="auth-link">
+          ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

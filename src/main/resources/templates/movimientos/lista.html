@@ -1,0 +1,82 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movimientos - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="admin-layout">
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <main class="admin-main">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Movimientos</h1>
+          <p class="page-desc">Registro de todas las acciones realizadas en el panel de administración</p>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-header">
+          <form th:action="@{/movimientos}" method="get" class="filters-bar">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" name="q" th:value="${q}" placeholder="Buscar por descripción o usuario..." />
+            </div>
+            <select name="modulo" class="form-select" style="max-width:200px;" onchange="this.form.submit()">
+              <option value="">Todos los módulos</option>
+              <option th:each="m : ${modulos}" th:value="${m}" th:text="${m}" th:selected="${m == modulo}"></option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+            <a th:href="@{/movimientos}" class="btn btn-outline btn-sm">Limpiar</a>
+          </form>
+        </div>
+        <div class="card-content">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha y hora</th>
+                  <th>Usuario</th>
+                  <th>Módulo</th>
+                  <th>Acción</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="m : ${page.content}">
+                  <td style="white-space:nowrap;font-size:0.8125rem;color:var(--text-secondary);"
+                      th:text="${#temporals.format(m.fecha, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                  <td>
+                    <div style="font-weight:600;" th:text="${m.usuarioNombre}"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);" th:text="${m.usuarioCorreo}"></div>
+                  </td>
+                  <td><span class="badge badge-outline" th:text="${m.modulo}"></span></td>
+                  <td>
+                    <span class="badge"
+                          th:classappend="${m.accion == 'CREAR'} ? 'badge-success' : (${m.accion == 'ELIMINAR'} ? 'badge-danger' : 'badge-warning')"
+                          th:text="${m.accion}"></span>
+                  </td>
+                  <td th:text="${m.descripcion}"></td>
+                </tr>
+                <tr th:if="${page.content.isEmpty()}">
+                  <td colspan="5">
+                    <div class="empty-state">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+                      <h3>No hay movimientos</h3>
+                      <p>Las acciones que realices en el panel se registrarán aquí</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:replace="~{fragments/pagination :: pagination(${page})}"></div>
+        </div>
+      </div>
+    </main>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<header
+  class="header-container"
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="navbar"
+>
+  <h1>Panel Administrativo</h1>
+
+  <p>Gestión del sistema de inventario de farmacia</p>
+
+  <nav class="navbar" th:fragment="navbar">
+    <div class="navbar-links">
+      <a th:href="@{/admin}">Inicio</a>
+      <a th:href="@{/productos}">Productos</a>
+      <a th:href="@{/categorias}">Categorías</a>
+      <a th:href="@{/proveedores}">Proveedores</a>
+      <a th:href="@{/usuarios}">Usuarios</a>
+      <a th:href="@{/clientes}">Clientes</a>
+      <a th:href="@{/ventas}">Ventas</a>
+    </div>
+
+    <a th:href="@{/logout}" class="logout-btn" style="text-decoration:none;">Cerrar sesión</a>
+  </nav>
+</header>

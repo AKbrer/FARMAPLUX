@@ -1,0 +1,98 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clientes - FarmaPlus</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  </head>
+  <body class="admin-layout">
+    <button class="sidebar-toggle" aria-label="Toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    <main class="admin-main">
+      <div th:if="${success}" class="alert alert-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span th:text="${success}"></span>
+      </div>
+      <div th:if="${error}" class="alert alert-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <span th:text="${error}"></span>
+      </div>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Clientes</h1>
+          <p class="page-desc">Gestión de clientes de la farmacia</p>
+        </div>
+        <div class="page-actions">
+          <a class="btn btn-primary" th:href="@{/clientes/nuevo}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Nuevo Cliente
+          </a>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-header">
+          <form th:action="@{/clientes}" method="get" class="filters-bar">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" name="q" th:value="${q}" placeholder="Buscar por nombre o documento..." />
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+            <a th:href="@{/clientes}" class="btn btn-outline btn-sm">Limpiar</a>
+          </form>
+        </div>
+        <div class="card-content">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Documento</th>
+                  <th>Teléfono</th>
+                  <th>Correo</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="c : ${page.content}">
+                  <td th:text="${c.id}" style="font-weight:600;"></td>
+                  <td th:text="${c.nombre}"></td>
+                  <td th:text="${c.documento}"></td>
+                  <td th:text="${c.telefono}"></td>
+                  <td style="color:var(--secondary);" th:text="${c.correo}"></td>
+                  <td>
+                    <div class="actions-cell">
+                      <a class="btn btn-icon btn-icon-sm btn-ghost" th:href="@{/clientes/editar/{id}(id=${c.id})}" title="Editar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                      </a>
+                      <a class="btn btn-icon btn-icon-sm btn-ghost" th:href="@{/ventas}" title="Ver Ventas" style="color:var(--secondary);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                      </a>
+                      <a class="btn btn-icon btn-icon-sm btn-ghost" th:href="@{/clientes/eliminar/{id}(id=${c.id})}" style="color:var(--danger);" title="Eliminar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${page.content.isEmpty()}">
+                  <td colspan="6">
+                    <div class="empty-state">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                      <h3>No hay clientes</h3>
+                      <p>Comienza agregando un nuevo cliente</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div th:replace="~{fragments/pagination :: pagination(${page})}"></div>
+        </div>
+      </div>
+    </main>
+    <script th:src="@{/js/app.js}"></script>
+  </body>
+</html>
